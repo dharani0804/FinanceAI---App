@@ -73,12 +73,12 @@ Your data never leaves your device. No cloud database, no third-party sharing �
 | Feature | Status |
 |---|---|
 | Landing page | ✅ Live |
-| Statement upload (CSV + PDF) | ✅ Live |
-| Manual transaction entry | ✅ Live |
-| Inline transaction editing | ✅ Live |
-| Dashboard with charts | ✅ Live |
-| AI chat assistant | ✅ Live |
-| Multi-currency support | ✅ Live |
+| Statement upload (CSV + PDF) | 🔲 In progress|
+| Manual transaction entry | 🔲 In progress |
+| Inline transaction editing | 🔲 In progress |
+| Dashboard with charts | 🔲 In progress |
+| AI chat assistant | 🔲 In progress |
+| Multi-currency support |🔲 In progress |
 | Goals page | 🔲 In progress |
 | Multi-bank tracking | 🔲 In progress |
 | AI goal recommendations | 🔲 In progress |
@@ -103,13 +103,7 @@ Your data never leaves your device. No cloud database, no third-party sharing �
 
 ---
 
-## Pricing
 
-| Plan | Price | What's included |
-|---|---|---|
-| Free | $0 forever | 1 upload/mo, 50 transactions, 10 AI messages, 1 goal |
-| Plus | $4.99/mo | Unlimited uploads, full dashboard, unlimited AI chat, 5 goals |
-| Pro | $9.99/mo | Everything in Plus + multi-bank, AI reports, priority support |
 
 ---
 
