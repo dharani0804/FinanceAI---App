@@ -156,4 +156,4 @@ Get a free Claude API key at **https://console.anthropic.com**
 
 ---
 
-*Built step by step with Claude AI · © 2026 FinanceAI*
+
