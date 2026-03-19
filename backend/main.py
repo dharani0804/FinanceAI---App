@@ -24,7 +24,7 @@ app.add_middleware(
 CATEGORIES = [
     "Uncategorized","Food & Dining","Shopping","Transport",
     "Entertainment","Bills & Utilities","Health","Travel",
-    "Groceries","Salary","Transfer","Other"
+    "Groceries","Salary","Transfer","Payment","Other"
 ]
 
 class ChatMessage(BaseModel):
@@ -46,6 +46,14 @@ class TransactionUpdate(BaseModel):
     category: Optional[str] = None
     bank_source: Optional[str] = None
 
+class UserProfileUpdate(BaseModel):
+    monthly_income: Optional[float] = None
+    monthly_budget: Optional[float] = None
+    savings_goal: Optional[float] = None
+    currency: Optional[str] = None
+    pay_frequency: Optional[str] = None
+    income_sources: Optional[str] = None
+
 @app.get("/")
 def read_root():
     return {"status": "FinanceAI backend is running"}
@@ -53,6 +61,41 @@ def read_root():
 @app.get("/categories")
 def get_categories():
     return CATEGORIES
+
+@app.get("/profile")
+def get_profile(db: Session = Depends(get_db)):
+    from models import UserProfile
+    profile = db.query(UserProfile).first()
+    if not profile:
+        return {"exists": False}
+    return {
+        "exists": True,
+        "monthly_income": profile.monthly_income,
+        "monthly_budget": profile.monthly_budget,
+        "savings_goal": profile.savings_goal,
+        "currency": profile.currency,
+        "pay_frequency": profile.pay_frequency,
+    }
+
+@app.post("/profile")
+def save_profile(data: UserProfileUpdate, db: Session = Depends(get_db)):
+    from models import UserProfile
+    profile = db.query(UserProfile).first()
+    if not profile:
+        profile = UserProfile()
+        db.add(profile)
+    if data.monthly_income is not None:
+        profile.monthly_income = data.monthly_income
+    if data.monthly_budget is not None:
+        profile.monthly_budget = data.monthly_budget
+    if data.savings_goal is not None:
+        profile.savings_goal = data.savings_goal
+    if data.currency is not None:
+        profile.currency = data.currency
+    if data.pay_frequency is not None:
+        profile.pay_frequency = data.pay_frequency
+    db.commit()
+    return {"success": True}
 
 @app.post("/upload")
 async def upload_statement(
@@ -64,25 +107,52 @@ async def upload_statement(
     try:
         transactions = parse_statement(file.filename, contents)
         saved = []
+        skipped = 0
         for t in transactions:
             try:
                 date = datetime.strptime(t["date"], "%Y-%m-%d").date() if t["date"] else None
             except:
                 date = None
+
+            # Deduplication check
+            existing = db.query(Transaction).filter(
+                Transaction.date == date,
+                Transaction.amount == t["amount"],
+                Transaction.description == t["description"],
+                Transaction.bank_source == bank_name
+            ).first()
+
+            if existing:
+                skipped += 1
+                continue
+
             tx = Transaction(
                 date=date,
                 description=t["description"],
                 original_description=t["description"],
                 amount=t["amount"],
-                currency=t["currency"],
-                category="Uncategorized",
+                currency=t.get("currency", "USD"),
+                category=t.get("category", "Uncategorized"),
                 bank_source=bank_name,
                 is_edited=False
             )
             db.add(tx)
-            saved.append(t)
+            saved.append({
+                "date": str(date),
+                "description": t["description"],
+                "amount": t["amount"],
+                "currency": t.get("currency", "USD"),
+                "category": t.get("category", "Uncategorized"),
+                "bank_source": bank_name,
+            })
         db.commit()
-        return {"success": True, "transactions_imported": len(saved), "transactions": saved}
+        return {
+            "success": True,
+            "transactions_imported": len(saved),
+            "skipped_duplicates": skipped,
+            "bank_source": bank_name,
+            "transactions": saved
+        }
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -165,16 +235,7 @@ def update_transaction(
         tx.bank_source = update.bank_source
     tx.is_edited = True
     db.commit()
-    return {
-        "id": tx.id,
-        "date": str(tx.date),
-        "description": tx.description,
-        "amount": tx.amount,
-        "currency": tx.currency,
-        "category": tx.category,
-        "bank_source": tx.bank_source,
-        "is_edited": tx.is_edited
-    }
+    return {"success": True}
 
 @app.delete("/transactions/{transaction_id}")
 def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):

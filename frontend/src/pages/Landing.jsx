@@ -26,7 +26,7 @@ export default function Landing() {
           <span style={S.logoText}>FinanceAI</span>
         </div>
         <div style={S.navLinks}>
-          {[['Features','features'],['How It Works','howitworks'],['Pricing','pricing'],['About','about']].map(([label,id])=>(
+          {[['Features','features'],['How It Works','howitworks'],['About','about']].map(([label,id])=>(
             <button key={id} onClick={()=>scrollTo(id)} style={S.navBtn}
               onMouseEnter={e=>e.target.style.color='#fff'}
               onMouseLeave={e=>e.target.style.color='#8888aa'}>
@@ -136,50 +136,6 @@ export default function Landing() {
       </section>
 
       {/* PRICING */}
-      <section id="pricing" style={{padding:'80px 64px', maxWidth:1000, margin:'0 auto', scrollMarginTop:80}}>
-        <div style={{textAlign:'center', marginBottom:56}}>
-          <p style={{color:'#4a4a6a', fontSize:12, fontWeight:600, letterSpacing:3, textTransform:'uppercase', marginBottom:12}}>Pricing</p>
-          <h2 style={{fontSize:40, fontWeight:800, color:'#fff', marginBottom:12, letterSpacing:'-1px'}}>Simple, honest pricing</h2>
-          <p style={{color:'#6a6a8a', fontSize:16}}>Start free. Upgrade when you're ready.</p>
-        </div>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:20}}>
-          {[
-            { name:'Free',  price:'$0',    period:'forever', color:'#6a6a8a', border:'#1e1e2e',  highlight:false,
-              items:['1 upload per month','50 transactions','Basic dashboard','10 AI messages/mo','1 savings goal'],
-              cta:'Get Started', bg:'transparent', btnBorder:'#2a2a3a', btnColor:'#fff' },
-            { name:'Plus',  price:'$4.99', period:'/month',  color:'#3b82f6', border:'#3b82f6',  highlight:true,
-              items:['Unlimited uploads','500 transactions','Full charts & dashboard','Unlimited AI chat','5 savings goals','Multi-currency','Export to CSV'],
-              cta:'Start Plus', bg:'#2563eb', btnBorder:'#2563eb', btnColor:'#fff' },
-            { name:'Pro',   price:'$9.99', period:'/month',  color:'#8b5cf6', border:'#8b5cf6',  highlight:false,
-              items:['Everything in Plus','Unlimited transactions','Multi-bank tracking','AI monthly reports','AI savings advice','Priority support'],
-              cta:'Start Pro', bg:'transparent', btnBorder:'#8b5cf6', btnColor:'#a78bfa' },
-          ].map((plan,i)=>(
-            <div key={i} style={{background:'#12121e', borderRadius:24, padding:'36px', border:`1px solid ${plan.border}`, position:'relative', boxShadow: plan.highlight ? '0 0 48px rgba(59,130,246,0.1)' : 'none'}}>
-              {plan.highlight && (
-                <div style={{position:'absolute', top:-14, left:'50%', transform:'translateX(-50%)', background:'#2563eb', color:'#fff', fontSize:11, fontWeight:700, padding:'4px 16px', borderRadius:99, whiteSpace:'nowrap'}}>
-                  Most Popular
-                </div>
-              )}
-              <p style={{color:'#fff', fontWeight:800, fontSize:18, marginBottom:8}}>{plan.name}</p>
-              <div style={{display:'flex', alignItems:'baseline', gap:4, marginBottom:28}}>
-                <span style={{fontSize:40, fontWeight:900, color:plan.color}}>{plan.price}</span>
-                <span style={{color:'#4a4a6a', fontSize:14}}>{plan.period}</span>
-              </div>
-              <div style={{marginBottom:28}}>
-                {plan.items.map((item,j)=>(
-                  <div key={j} style={{display:'flex', alignItems:'center', gap:10, marginBottom:12}}>
-                    <span style={{color:plan.color, fontSize:14, fontWeight:700}}>✓</span>
-                    <span style={{color:'#8888aa', fontSize:13}}>{item}</span>
-                  </div>
-                ))}
-              </div>
-              <Link to="/app" style={{display:'block', textAlign:'center', padding:'12px', borderRadius:12, background:plan.bg, border:`1px solid ${plan.btnBorder}`, color:plan.btnColor, fontWeight:700, fontSize:14, textDecoration:'none'}}>
-                {plan.cta}
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ABOUT */}
       <section id="about" style={{padding:'80px 64px', maxWidth:900, margin:'0 auto', scrollMarginTop:80}}>
