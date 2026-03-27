@@ -1,159 +1,213 @@
-# FinanceAI 💰
+# FinanceAI
 
-> Know exactly where your money goes — without spreadsheets, without linking your bank, without the complexity.
+An AI-powered personal finance tracker built for people who want clarity over their money without giving up their data.
 
-FinanceAI is a personal finance tracker powered by Claude AI. Upload a bank statement or enter transactions manually, and instantly get a clear picture of your spending — with an AI assistant you can actually talk to.
-
----
-
-## The Problem We're Solving
-
-Most people don't know where their money actually goes.
-
-- Bank apps show raw transactions but offer no insight
-- Budget spreadsheets need manual input every time — and most people fall behind
-- Switching between multiple bank accounts makes it even harder to see the full picture
-- Understanding *why* you overspent is still a completely manual exercise
-
-FinanceAI fixes all of this — automatically.
+No bank linking. No cloud database. No subscriptions required to get started.
 
 ---
 
-## What It Does
+## What it does
 
-### 📎 Upload Any Bank Statement
-Drop in a CSV or PDF from any bank, anywhere in the world. FinanceAI parses it instantly — no manual entry, no bank credentials, no linking required. Your statement is never stored; only the transaction data is saved.
+Upload bank statements from any bank — Chase, American Express, HDFC, Revolut, or any CSV/PDF/XLSX export — and FinanceAI extracts every transaction, categorises it automatically, and surfaces insights about your spending, savings, and debt.
 
-### ✏️ Or Enter Transactions Manually
-Prefer to add transactions one by one? Use the manual entry form. Every field — date, merchant, amount, currency, category — is editable after saving too.
+**Core features**
 
-### 📊 Instant Visual Dashboard
-The moment you upload, your dashboard comes alive:
-- **Scorecards** — total balance, income, spending, savings rate
-- **Monthly bar chart** — income vs spending side by side
-- **Category pie chart** — where your money actually goes
-- **Transaction table** — every entry, fully editable inline
-
-### 💬 AI Chat Assistant
-Ask Claude AI anything about your finances in plain English:
-- *"Why did I overspend in January?"*
-- *"Where is most of my money going?"*
-- *"How much can I realistically save each month?"*
-
-Claude analyses your actual transactions and gives specific, data-driven answers — not generic tips.
-
-### 🎯 Goals & Recommendations
-Set savings targets with deadlines. Get AI-generated recommendations tailored to your real spending patterns.
-
-### 💱 Multi-Currency
-Works with USD, EUR, GBP, INR, AUD, SGD, AED and 150+ more. Built for people with accounts across multiple countries.
-
-### 🔒 Private by Default
-Your data never leaves your device. No cloud database, no third-party sharing — everything stored locally.
+- Multi-format statement ingestion — PDF, CSV, XLSX, XLS
+- Auto bank detection from statement content
+- Transaction-level extraction — one row per transaction, never statement summaries
+- AI-powered categorisation using Claude API
+- Automatic deduplication using SHA-256 fingerprinting
+- Exclusion engine — payroll, Zelle, Venmo, card payments excluded from spending by default, always editable
+- Dashboard with spending breakdown, budget tracking, trend charts, and AI insights
+- Debt journey — track multiple debts, payoff projections, and what-if scenarios
+- AI chat — ask anything about your spending in plain English
+- Fully editable — every transaction, category, and classification can be overridden
+- Privacy-first — all data stored locally in SQLite, no external database
 
 ---
 
-## How It Works
-```
-1. Upload your bank statement (CSV or PDF)
-        ↓
-2. FinanceAI parses and categorises every transaction
-        ↓
-3. Your dashboard populates instantly with charts and metrics
-        ↓
-4. Chat with your AI assistant to understand your spending
-        ↓
-5. Set goals and get personalised recommendations
-```
+## Tech stack
 
----
-
-## Current Status
-
-| Feature | Status |
+| Layer | Technology |
 |---|---|
-| Landing page | ✅ Live |
-| Statement upload (CSV + PDF) | 🔲 In progress|
-| Manual transaction entry | 🔲 In progress |
-| Inline transaction editing | 🔲 In progress |
-| Dashboard with charts | 🔲 In progress |
-| AI chat assistant | 🔲 In progress |
-| Multi-currency support |🔲 In progress |
-| Goals page | 🔲 In progress |
-| Multi-bank tracking | 🔲 In progress |
-| AI goal recommendations | 🔲 In progress |
-| User auth (login / signup) | 🔲 Planned |
-| Deploy to web | 🔲 Planned |
+| Frontend | React 18 + Vite |
+| Styling | Inline styles + Recharts |
+| Backend | Python FastAPI |
+| Database | SQLite + SQLAlchemy |
+| AI | Claude API (Anthropic) — `claude-sonnet-4-6` |
+| PDF parsing | pdfplumber |
+| Spreadsheet parsing | pandas |
 
 ---
 
-## Roadmap
+## Project structure
 
-**Next up**
-- [ ] Goals page with progress tracking
-- [ ] AI-powered savings recommendations
-- [ ] Multi-statement tracking by bank
-- [ ] Category-level spending limits and alerts
-
-**Coming later**
-- [ ] User authentication (login / signup)
-- [ ] Optional cloud sync and backup
-- [ ] Mobile-friendly PWA
-- [ ] Deploy to web — shareable link
-
----
-
-
-
----
-
-## Built With
-
-- **Frontend** — React 18, Vite, Tailwind CSS
-- **Backend** — Python, FastAPI, SQLite
-- **AI** — Claude API by Anthropic (claude-sonnet-4-6)
-- **Charts** — Recharts
-- **Icons** — Lucide React
+```
+financeai/
+├── frontend/
+│   └── src/
+│       └── pages/
+│           ├── Landing.jsx       # Marketing landing page
+│           ├── Onboarding.jsx    # Multi-step setup questionnaire
+│           ├── Upload.jsx        # Multi-file upload + review table
+│           ├── Dashboard.jsx     # Analytics dashboard
+│           ├── Chat.jsx          # AI chat interface
+│           ├── Goals.jsx         # Debt journey + what-if calculator
+│           └── Navbar.jsx        # Navigation
+└── backend/
+    ├── main.py                   # FastAPI app + all endpoints
+    ├── models.py                 # SQLAlchemy models
+    ├── parser.py                 # Multi-format file parser
+    ├── ai.py                     # Claude API integration
+    ├── classifier.py             # Transaction classification engine
+    └── database.py               # SQLite connection
+```
 
 ---
 
-## Getting Started (Local)
+## Getting started
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+- An Anthropic API key — get one at [console.anthropic.com](https://console.anthropic.com)
+
+### Backend setup
+
 ```bash
-# Clone the repo
-git clone https://github.com/dharani0804/FinanceAI---App.git
-cd FinanceAI---App
-
-# Start the backend
 cd backend
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
-echo 'ANTHROPIC_API_KEY=your-key-here' > .env
-uvicorn main:app --reload
+pip install fastapi uvicorn sqlalchemy pdfplumber pandas python-multipart anthropic pydantic python-dotenv openpyxl
+```
 
-# Start the frontend (new terminal)
+Set your API key in `backend/ai.py`:
+
+```python
+client = anthropic.Anthropic(api_key="your-api-key-here")
+```
+
+Start the backend:
+
+```bash
+uvicorn main:app --reload
+```
+
+Backend runs at `http://127.0.0.1:8000`
+
+### Frontend setup
+
+```bash
 cd frontend
 npm install
 npm run dev
-
-# Open in browser
-http://localhost:5173
 ```
 
-Get a free Claude API key at **https://console.anthropic.com**
+Frontend runs at `http://localhost:5173`
 
 ---
 
-## Why Not Just Use a Spreadsheet?
+## How it works
 
-| | Spreadsheet | FinanceAI |
+### Upload pipeline
+
+```
+PDF / CSV / XLSX
+       ↓
+Format detection
+       ↓
+Parser (pdfplumber / pandas)
+       ↓
+Full text → Claude API (chunked, overlapping)
+       ↓
+Raw transactions extracted
+       ↓
+Normalisation — dates, amounts, descriptions
+       ↓
+Classification — expense / income / transfer / card payment / loan payment / refund
+       ↓
+Fingerprint deduplication (SHA-256)
+       ↓
+Stored in SQLite transactions table
+```
+
+### Classification rules
+
+The system uses a rule-based classifier with regex patterns across 12 expense categories. Low-confidence transactions are flagged for review. Users can create persistent classification rules — for example, always classify "NETFLIX" as Subscriptions.
+
+Transactions excluded from spending totals by default:
+- Payroll and direct deposits
+- Internal transfers
+- Zelle, Venmo, wire transfers
+- Credit card payments
+- Loan payments
+
+All exclusions are visible, editable, and reversible.
+
+### Dashboard metrics
+
+- **Total income** — from user profile only, not inferred from transactions
+- **Total expenses** — only `transaction_type = expense` with `amount < 0`
+- **Card credits** — Amex credits, Uber One credits etc. excluded from both income and spending
+- **Net remaining** — income minus expenses
+- **Savings rate** — (income − expenses) / income
+
+---
+
+## API endpoints
+
+| Method | Endpoint | Description |
 |---|---|---|
-| Manual data entry | Every time | Never |
-| Understands your spending | You figure it out | AI explains it |
-| Works across multiple banks | Copy-paste nightmare | Upload and done |
-| Ask questions about your money | Not possible | Just type and ask |
-| Setup time | Hours | 30 seconds |
+| POST | `/upload` | Upload and parse a statement file |
+| GET | `/transactions` | All posted transactions |
+| PATCH | `/transactions/{id}` | Edit a transaction |
+| GET | `/transactions/review` | Low-confidence review queue |
+| POST | `/transactions/manual` | Add a manual transaction |
+| GET/POST | `/profile` | User profile |
+| GET/POST | `/rules` | Classification rules |
+| GET | `/categories` | All categories |
+| GET | `/accounts` | Bank accounts |
+| GET | `/uploads` | Upload history |
+| POST | `/chat` | AI chat |
+| DELETE | `/data/all` | Delete all data (privacy) |
 
 ---
 
+## Supported file formats
 
+| Format | Support | Notes |
+|---|---|---|
+| CSV | Best | Clean column mapping, fastest processing |
+| XLSX / XLS | Best | Multi-sheet support, same column mapping |
+| PDF | Good | Claude API extracts transactions from text |
+| OFX / QFX | Planned | |
+| QIF | Planned | |
+
+---
+
+## Privacy
+
+- All data is stored locally in a SQLite file (`backend/financeai.db`)
+- No bank credentials are ever collected
+- Uploaded files are never stored — only the extracted transaction rows are saved
+- Raw transaction fields are preserved separately from normalised fields
+- Users can delete all data at any time via `DELETE /data/all`
+
+---
+
+## Status
+
+**In progress** — core upload, dashboard, debt journey, and AI chat are functional. Auth, deployment, and goals tracking are next.
+
+---
+
+## Resume line
+
+> **FinanceAI** *(In Progress)* — AI-powered personal finance tracker built with React, FastAPI and Claude API; features multi-bank statement ingestion, automatic transaction categorization and conversational spending analysis.
+
+---
+
+## License
+
+MIT
